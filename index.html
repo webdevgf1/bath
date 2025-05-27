@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BAYC Bathroom Stall</title>
+    <title>Bathroom Coin - Pixel Stall</title>
     <style>
         * {
             margin: 0;
@@ -301,7 +301,7 @@
 </head>
 <body>
     <div class="header">
-        <div class="logo">BAYC</div>
+        <div class="logo">BATHROOM COIN</div>
         <nav class="nav">
             <a href="#" onclick="showSection('draw')">BUY AN APE</a>
             <a href="#" onclick="showSection('gallery')">GALLERY</a>
@@ -319,7 +319,7 @@
 
     <div class="status">
         <span class="online-dot"></span>
-        <span id="onlineCount">1</span> online
+        Live Wall
     </div>
 
     <div class="container">
@@ -528,9 +528,8 @@
                 }
             }
             
-            // Update online count
-            const onlineCount = Math.floor(Math.random() * 20) + 1;
-            document.getElementById('onlineCount').textContent = onlineCount;
+            // Update online count - removed fake online stats
+            // Real-time wall indicator only
         }
 
         function updateStats() {
