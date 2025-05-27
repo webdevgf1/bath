@@ -34,21 +34,33 @@
             text-shadow: 0 0 10px #ffff00;
         }
 
-        .nav {
+        .contract-address {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .social-links {
             display: flex;
-            gap: 30px;
+            gap: 20px;
         }
 
-        .nav a {
+        .social-links a {
             color: #fff;
+            font-size: 24px;
             text-decoration: none;
-            font-size: 14px;
-            letter-spacing: 1px;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            padding: 8px;
+            border-radius: 5px;
         }
 
-        .nav a:hover, .nav a.active {
+        .social-links a:hover {
             color: #ffff00;
+            transform: scale(1.1);
+            background: rgba(255, 255, 0, 0.1);
         }
 
         .container {
@@ -596,14 +608,7 @@
         }
 
         function showSection(section) {
-            // Update navigation
-            document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // You can add section switching logic here
-            if (section === 'bathroom') {
-                // Already on bathroom section
-            }
+            // Removed navigation switching logic since we no longer have nav sections
         }
 
         // Initialize
