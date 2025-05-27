@@ -202,17 +202,77 @@
             border: 2px solid #ccc;
         }
 
-        .stats {
+        .chat-container {
             background: #222;
             padding: 15px;
             border-radius: 5px;
             margin-bottom: 20px;
         }
 
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            background: #111;
+            padding: 10px;
+            border-radius: 5px;
             margin-bottom: 10px;
+            border: 1px solid #333;
+        }
+
+        .chat-message {
+            margin-bottom: 8px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .username {
+            color: #ffff00;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .message {
+            color: #fff;
+        }
+
+        .timestamp {
+            color: #888;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 8px;
+        }
+
+        #chatInput {
+            flex: 1;
+            background: #111;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 8px;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        #chatInput:focus {
+            outline: none;
+            border-color: #ffff00;
+        }
+
+        #sendBtn {
+            background: #ffff00;
+            color: #000;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #sendBtn:hover {
+            background: #e6e600;
         }
 
         .archive-list {
@@ -291,30 +351,32 @@
         </div>
 
         <div class="sidebar">
-            <div class="toilet">
-                <div class="tank"></div>
-                <div class="flush-handle"></div>
-                <div class="toilet-seat"></div>
-                <div class="toilet-bowl"></div>
+            <div class="chat-container">
+                <h3 style="margin-bottom: 15px; color: #ffff00;">Stall Talk</h3>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-message">
+                        <span class="username">anon1337:</span>
+                        <span class="message">first!</span>
+                        <span class="timestamp">2m ago</span>
+                    </div>
+                    <div class="chat-message">
+                        <span class="username">cryptobro:</span>
+                        <span class="message">bathroom coin to the moon 🚀</span>
+                        <span class="timestamp">1m ago</span>
+                    </div>
+                    <div class="chat-message">
+                        <span class="username">pixelmaster:</span>
+                        <span class="message">drawing some art rn</span>
+                        <span class="timestamp">30s ago</span>
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" id="chatInput" placeholder="Type a message..." maxlength="100">
+                    <button onclick="sendMessage()" id="sendBtn">Send</button>
+                </div>
             </div>
 
-            <div class="stats">
-                <h3 style="margin-bottom: 15px; color: #ffff00;">Wall Stats</h3>
-                <div class="stat-item">
-                    <span>Pixels drawn:</span>
-                    <span id="pixelCount">0</span>
-                </div>
-                <div class="stat-item">
-                    <span>Contributors:</span>
-                    <span id="contributorCount">0</span>
-                </div>
-                <div class="stat-item">
-                    <span>Time left:</span>
-                    <span id="timeLeft">29:45</span>
-                </div>
-            </div>
-
-            <div class="archive-list">
+            <div class="archive-list" style="margin-top: 20px;">
                 <h3 style="margin-bottom: 15px; color: #ffff00;">Archive</h3>
                 <div id="archiveList">
                     <div class="archive-item">Wall #1 - 2 min ago</div>
@@ -383,7 +445,6 @@
                 
                 // Simulate contributor tracking
                 contributors.add(Math.random().toString(36).substr(2, 9));
-                updateStats();
             }
         }
 
@@ -477,10 +538,78 @@
             }
         }
 
-        function updateStats() {
-            document.getElementById('pixelCount').textContent = pixelCount;
-            document.getElementById('contributorCount').textContent = contributors.size;
+        // Chat functionality - REAL CHAT READY
+        let chatMessages = [
+            { username: 'anon1337', message: 'Chat is live!', timestamp: Date.now() - 120000 }
+        ];
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                const username = 'anon' + Math.floor(Math.random() * 9999);
+                const newMessage = {
+                    username: username,
+                    message: message,
+                    timestamp: Date.now()
+                };
+                
+                // TODO: Send to Firebase/backend here instead of local array
+                chatMessages.push(newMessage);
+                
+                input.value = '';
+                updateChatDisplay();
+                scrollChatToBottom();
+            }
         }
+
+        function updateChatDisplay() {
+            const chatContainer = document.getElementById('chatMessages');
+            chatContainer.innerHTML = '';
+            
+            chatMessages.slice(-20).forEach(msg => {
+                const div = document.createElement('div');
+                div.className = 'chat-message';
+                div.innerHTML = `
+                    <span class="username">${msg.username}:</span>
+                    <span class="message">${msg.message}</span>
+                    <span class="timestamp">${getTimeAgo(msg.timestamp)}</span>
+                `;
+                chatContainer.appendChild(div);
+            });
+        }
+
+        function scrollChatToBottom() {
+            const chatContainer = document.getElementById('chatMessages');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Remove fake message simulation
+        // Real users only - connect to Firebase/backend for live chat
+
+        function getTimeAgo(timestamp) {
+            const now = Date.now();
+            const diffMs = now - timestamp;
+            const diffSecs = Math.floor(diffMs / 1000);
+            const diffMins = Math.floor(diffSecs / 60);
+            
+            if (diffSecs < 60) return `${diffSecs}s ago`;
+            if (diffMins < 60) return `${diffMins}m ago`;
+            return `${Math.floor(diffMins / 60)}h ago`;
+        }
+
+        // Enter key to send message
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+            }
+        });
 
         function clearCanvas() {
             ctx.fillStyle = '#ffffff';
@@ -488,7 +617,6 @@
             pixelData = {};
             pixelCount = 0;
             contributors.clear();
-            updateStats();
         }
 
         function resetWall() {
@@ -571,12 +699,13 @@
                 }
             }, 1000);
             
+            // Initialize chat (remove fake simulation)
+            updateChatDisplay();
+            scrollChatToBottom();
+            
             // Start timers
             setInterval(updateTimer, 1000);
             setInterval(updateAutoRefresh, 1000);
-            
-            // Initial stats
-            updateStats();
         }
 
         // Initialize when page loads
