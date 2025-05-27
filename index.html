@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bathroom Coin - Pixel Stall</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,82 +14,84 @@
         }
 
         body {
-            background: #0a0a0a;
-            color: #fff;
-            font-family: 'Arial', sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            image-rendering: pixelated;
             overflow-x: hidden;
         }
 
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent 50%, rgba(0, 255, 0, 0.03) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
         .header {
+            background: #16213e;
+            border-bottom: 4px solid #0f3460;
+            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            background: #111;
-            border-bottom: 2px solid #333;
+            box-shadow: 0 4px 0 #0a1a2e;
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #ffff00;
-            text-shadow: 0 0 10px #ffff00;
+            color: #00ff41;
+            font-size: 16px;
+            text-shadow: 2px 2px 0px #003d16;
+            letter-spacing: 2px;
         }
 
         .contract-address {
-            font-size: 18px;
-            font-weight: bold;
-            color: #00ff00;
-            text-shadow: 0 0 10px #00ff00;
-            letter-spacing: 2px;
-            font-family: 'Arial', sans-serif;
+            color: #ff6b35;
+            font-size: 14px;
+            text-shadow: 2px 2px 0px #5c1a00;
+            letter-spacing: 1px;
+            padding: 8px 16px;
+            background: #2a1810;
+            border: 2px solid #ff6b35;
         }
 
         .social-links {
             display: flex;
-            gap: 20px;
+            gap: 15px;
         }
 
         .social-links a {
-            color: #fff;
-            font-size: 16px;
+            color: #eee;
             text-decoration: none;
-            transition: all 0.3s;
             padding: 8px 12px;
-            border-radius: 5px;
-            border: 1px solid #333;
-            background: #222;
+            background: #0f3460;
+            border: 2px solid #1e5f99;
+            transition: all 0.2s;
+            font-size: 10px;
         }
 
         .social-links a:hover {
-            color: #ffff00;
-            transform: scale(1.1);
-            background: rgba(255, 255, 0, 0.1);
+            background: #1e5f99;
+            color: #00ff41;
+            transform: translateY(-2px);
         }
 
         .container {
             display: flex;
-            min-height: calc(100vh - 80px);
+            min-height: calc(100vh - 100px);
         }
 
         .canvas-section {
             flex: 1;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .canvas-container {
-            position: relative;
-            border: 3px solid #333;
-            background: #f0f0f0;
-            margin-bottom: 20px;
-        }
-
-        #pixelCanvas {
-            cursor: crosshair;
-            image-rendering: pixelated;
+            background: #16213e;
         }
 
         .controls {
@@ -95,128 +99,121 @@
             gap: 20px;
             align-items: center;
             margin-bottom: 20px;
+            background: #0f3460;
+            padding: 15px;
+            border: 3px solid #1e5f99;
         }
 
         .color-palette {
             display: grid;
-            grid-template-columns: repeat(8, 30px);
-            gap: 5px;
+            grid-template-columns: repeat(8, 32px);
+            gap: 4px;
         }
 
         .color-btn {
-            width: 30px;
-            height: 30px;
-            border: 2px solid #333;
+            width: 32px;
+            height: 32px;
+            border: 3px solid #333;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.1s;
+            image-rendering: pixelated;
         }
 
         .color-btn:hover {
             transform: scale(1.1);
+            border-color: #00ff41;
         }
 
         .color-btn.selected {
-            border-color: #ffff00;
-            box-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+            border-color: #00ff41;
+            box-shadow: 0 0 0 2px #00ff41;
+            transform: scale(1.1);
         }
 
-        .timer {
-            background: #222;
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: 1px solid #444;
+        .timer-display {
+            background: #1a1a2e;
+            padding: 10px 15px;
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .canvas-container {
+            background: #fff;
+            border: 4px solid #0f3460;
+            box-shadow: 4px 4px 0 #0a1a2e;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        #pixelCanvas {
+            cursor: crosshair;
+            image-rendering: pixelated;
+            display: block;
+        }
+
+        .canvas-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .pixel-btn {
+            background: #ff6b35;
+            color: #fff;
+            border: 3px solid #cc5529;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
+            transition: all 0.1s;
+        }
+
+        .pixel-btn:hover {
+            background: #cc5529;
+            transform: translateY(-2px);
+        }
+
+        .pixel-btn:active {
+            transform: translateY(0);
         }
 
         .sidebar {
             width: 400px;
-            background: #111;
-            border-left: 2px solid #333;
+            background: #0f3460;
+            border-left: 4px solid #1e5f99;
             padding: 20px;
-        }
-
-        .toilet {
-            width: 200px;
-            height: 300px;
-            background: #f0f0f0;
-            border-radius: 20px;
-            position: relative;
-            margin: 0 auto 30px;
-            border: 3px solid #ccc;
-        }
-
-        .toilet-bowl {
-            width: 120px;
-            height: 80px;
-            background: #000;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 2px solid #333;
-        }
-
-        .toilet-seat {
-            width: 140px;
-            height: 100px;
-            background: #fff;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 3px solid #ddd;
-        }
-
-        .toilet-seat::before {
-            content: '';
-            width: 80px;
-            height: 60px;
-            background: #000;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .flush-handle {
-            width: 20px;
-            height: 40px;
-            background: #ccc;
-            position: absolute;
-            right: -10px;
-            top: 50px;
-            border-radius: 10px;
-        }
-
-        .tank {
-            width: 180px;
-            height: 120px;
-            background: #f0f0f0;
-            border-radius: 10px;
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 2px solid #ccc;
+            display: flex;
+            flex-direction: column;
         }
 
         .chat-container {
-            background: #222;
+            background: #1a1a2e;
+            border: 3px solid #00ff41;
             padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-title {
+            color: #00ff41;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 14px;
         }
 
         .chat-messages {
-            height: 450px;
+            flex: 1;
+            min-height: 400px;
+            max-height: 500px;
             overflow-y: auto;
-            background: #111;
+            background: #16213e;
             padding: 10px;
-            border-radius: 5px;
+            border: 2px solid #0f3460;
             margin-bottom: 10px;
-            border: 1px solid #333;
         }
 
         .chat-message {
@@ -226,18 +223,17 @@
         }
 
         .username {
-            color: #ffff00;
-            font-weight: bold;
+            color: #ff6b35;
             margin-right: 5px;
         }
 
         .message {
-            color: #fff;
+            color: #eee;
         }
 
         .timestamp {
             color: #888;
-            font-size: 11px;
+            font-size: 8px;
             margin-left: 10px;
         }
 
@@ -248,53 +244,81 @@
 
         #chatInput {
             flex: 1;
-            background: #111;
-            border: 1px solid #333;
-            color: #fff;
+            background: #16213e;
+            border: 2px solid #0f3460;
+            color: #eee;
             padding: 8px;
-            border-radius: 3px;
-            font-size: 14px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
         }
 
         #chatInput:focus {
             outline: none;
-            border-color: #ffff00;
+            border-color: #00ff41;
         }
 
         #sendBtn {
-            background: #ffff00;
+            background: #00ff41;
             color: #000;
-            border: none;
+            border: 2px solid #00cc33;
             padding: 8px 15px;
-            border-radius: 3px;
             cursor: pointer;
-            font-weight: bold;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
         }
 
         #sendBtn:hover {
-            background: #e6e600;
+            background: #00cc33;
+        }
+
+        .archive-section {
+            background: #1a1a2e;
+            border: 3px solid #ff6b35;
+            padding: 15px;
+        }
+
+        .archive-title {
+            color: #ff6b35;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 14px;
         }
 
         .archive-list {
-            background: #222;
-            padding: 15px;
-            border-radius: 5px;
             max-height: 200px;
             overflow-y: auto;
         }
 
         .archive-item {
             padding: 8px;
-            border-bottom: 1px solid #444;
+            border-bottom: 1px solid #333;
             cursor: pointer;
             transition: background 0.2s;
+            font-size: 10px;
         }
 
         .archive-item:hover {
             background: #333;
+            color: #00ff41;
         }
 
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
 
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00ff41;
+            border: 2px solid #1a1a2e;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00cc33;
+        }
 
         @media (max-width: 768px) {
             .container {
@@ -306,37 +330,36 @@
                 order: -1;
             }
             
-            .toilet {
-                width: 150px;
-                height: 200px;
-            }
-            
             #pixelCanvas {
                 max-width: 100%;
                 height: auto;
+            }
+            
+            .controls {
+                flex-wrap: wrap;
             }
         }
     </style>
 </head>
 <body>
+    <div class="scanlines"></div>
+    
     <div class="header">
         <div class="logo">BATHROOM COIN</div>
         <div class="contract-address">CA: BATHROOMCOIN</div>
         <div class="social-links">
-            <a href="https://twitter.com" target="_blank" title="X/Twitter">X/Twitter</a>
-            <a href="https://pump.fun" target="_blank" title="Pump.fun">Pump.Fun</a>
+            <a href="https://twitter.com" target="_blank">X/Twitter</a>
+            <a href="https://pump.fun" target="_blank">Pump.Fun</a>
         </div>
     </div>
-
-
 
     <div class="container">
         <div class="canvas-section">
             <div class="controls">
                 <div class="color-palette" id="colorPalette"></div>
-                <div class="timer">
-                    <div>Next refresh: <span id="timer">29:45</span></div>
-                    <div>Auto-refresh: <span id="autoRefresh">5s</span></div>
+                <div class="timer-display">
+                    <div>REFRESH: <span id="timer">29:45</span></div>
+                    <div>UPDATE: <span id="autoRefresh">5s</span></div>
                 </div>
             </div>
             
@@ -344,41 +367,31 @@
                 <canvas id="pixelCanvas" width="1000" height="700"></canvas>
             </div>
             
-            <div style="text-align: center; margin-top: 10px;">
-                <button onclick="clearCanvas()" style="background: #ff4444; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px;">Clear Wall</button>
-                <button onclick="saveToArchive()" style="background: #4444ff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Save to Archive</button>
+            <div class="canvas-buttons">
+                <button class="pixel-btn" onclick="clearCanvas()">CLEAR WALL</button>
+                <button class="pixel-btn" onclick="saveToArchive()">SAVE TO ARCHIVE</button>
             </div>
         </div>
 
         <div class="sidebar">
             <div class="chat-container">
-                <h3 style="margin-bottom: 15px; color: #ffff00;">Stall Talk</h3>
+                <div class="chat-title">STALL TALK</div>
                 <div class="chat-messages" id="chatMessages">
                     <div class="chat-message">
                         <span class="username">anon1337:</span>
-                        <span class="message">first!</span>
-                        <span class="timestamp">2m ago</span>
-                    </div>
-                    <div class="chat-message">
-                        <span class="username">cryptobro:</span>
-                        <span class="message">bathroom coin to the moon 🚀</span>
+                        <span class="message">Chat is live!</span>
                         <span class="timestamp">1m ago</span>
-                    </div>
-                    <div class="chat-message">
-                        <span class="username">pixelmaster:</span>
-                        <span class="message">drawing some art rn</span>
-                        <span class="timestamp">30s ago</span>
                     </div>
                 </div>
                 <div class="chat-input-container">
-                    <input type="text" id="chatInput" placeholder="Type a message..." maxlength="100">
-                    <button onclick="sendMessage()" id="sendBtn">Send</button>
+                    <input type="text" id="chatInput" placeholder="Type message..." maxlength="100">
+                    <button id="sendBtn" onclick="sendMessage()">SEND</button>
                 </div>
             </div>
 
-            <div class="archive-list" style="margin-top: 40px;">
-                <h3 style="margin-bottom: 15px; color: #ffff00;">Archive</h3>
-                <div id="archiveList">
+            <div class="archive-section">
+                <div class="archive-title">ARCHIVE</div>
+                <div class="archive-list" id="archiveList">
                     <div class="archive-item">Wall #1 - 2 min ago</div>
                     <div class="archive-item">Wall #2 - 32 min ago</div>
                     <div class="archive-item">Wall #3 - 1 hr ago</div>
@@ -395,7 +408,7 @@
         const GRID_WIDTH = canvas.width / PIXEL_SIZE;
         const GRID_HEIGHT = canvas.height / PIXEL_SIZE;
 
-        // Color palette
+        // Color palette - retro pixel art colors
         const colors = [
             '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
             '#800000', '#808080', '#800080', '#008000', '#000080', '#808000', '#FF8000', '#8000FF'
@@ -427,7 +440,7 @@
             selectedColor = color;
         }
 
-        // Canvas drawing
+        // Canvas drawing functions
         function drawPixel(x, y, color) {
             const pixelX = Math.floor(x / PIXEL_SIZE);
             const pixelY = Math.floor(y / PIXEL_SIZE);
@@ -436,14 +449,12 @@
                 const key = `${pixelX},${pixelY}`;
                 if (!pixelData[key]) {
                     pixelCount++;
-                    updateStats();
                 }
                 pixelData[key] = color;
                 
                 ctx.fillStyle = color;
                 ctx.fillRect(pixelX * PIXEL_SIZE, pixelY * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
                 
-                // Simulate contributor tracking
                 contributors.add(Math.random().toString(36).substr(2, 9));
             }
         }
@@ -456,7 +467,7 @@
             };
         }
 
-        // Event listeners
+        // Mouse events
         canvas.addEventListener('mousedown', (e) => {
             isDrawing = true;
             const pos = getMousePos(e);
@@ -494,7 +505,7 @@
         });
 
         // Timer functionality
-        let timeLeft = 30 * 60; // 30 minutes in seconds
+        let timeLeft = 30 * 60; // 30 minutes
         let autoRefreshCount = 5;
 
         function updateTimer() {
@@ -503,7 +514,6 @@
             const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             
             document.getElementById('timer').textContent = timeString;
-            document.getElementById('timeLeft').textContent = timeString;
             
             if (timeLeft <= 0) {
                 archiveCurrentWall();
@@ -519,28 +529,68 @@
             document.getElementById('autoRefresh').textContent = `${autoRefreshCount}s`;
             
             if (autoRefreshCount <= 0) {
-                // Simulate receiving updates from other users
-                simulateCollaborativeDrawing();
                 autoRefreshCount = 5;
             }
         }
 
-        // Simulate collaborative drawing
-        function simulateCollaborativeDrawing() {
-            if (Math.random() < 0.3) { // 30% chance of new pixels
-                const numPixels = Math.floor(Math.random() * 5) + 1;
-                for (let i = 0; i < numPixels; i++) {
-                    const x = Math.floor(Math.random() * GRID_WIDTH) * PIXEL_SIZE;
-                    const y = Math.floor(Math.random() * GRID_HEIGHT) * PIXEL_SIZE;
-                    const color = colors[Math.floor(Math.random() * colors.length)];
-                    drawPixel(x, y, color);
-                }
-            }
+        // Canvas functions
+        function clearCanvas() {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            pixelData = {};
+            pixelCount = 0;
+            contributors.clear();
         }
 
-        // Chat functionality - REAL CHAT READY
+        function resetWall() {
+            clearCanvas();
+            ctx.fillStyle = '#ff0000';
+            ctx.font = '20px monospace';
+            ctx.fillText('FRESH WALL', 20, 40);
+        }
+
+        function archiveCurrentWall() {
+            const imageData = canvas.toDataURL();
+            const timestamp = new Date().toLocaleString();
+            archive.unshift({
+                id: archive.length + 1,
+                timestamp: timestamp,
+                imageData: imageData,
+                pixelCount: pixelCount
+            });
+            updateArchiveList();
+        }
+
+        function saveToArchive() {
+            archiveCurrentWall();
+            alert('Wall saved to archive!');
+        }
+
+        function updateArchiveList() {
+            const archiveList = document.getElementById('archiveList');
+            archiveList.innerHTML = '';
+            
+            archive.slice(0, 10).forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'archive-item';
+                div.textContent = `Wall #${item.id} - ${getTimeAgo(item.timestamp)}`;
+                div.onclick = () => loadArchivedWall(item);
+                archiveList.appendChild(div);
+            });
+        }
+
+        function loadArchivedWall(item) {
+            const img = new Image();
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+            };
+            img.src = item.imageData;
+        }
+
+        // Chat functionality
         let chatMessages = [
-            { username: 'anon1337', message: 'Chat is live!', timestamp: Date.now() - 120000 }
+            { username: 'anon1337', message: 'Chat is live!', timestamp: Date.now() - 60000 }
         ];
 
         function sendMessage() {
@@ -555,9 +605,7 @@
                     timestamp: Date.now()
                 };
                 
-                // TODO: Send to Firebase/backend here instead of local array
                 chatMessages.push(newMessage);
-                
                 input.value = '';
                 updateChatDisplay();
                 scrollChatToBottom();
@@ -585,9 +633,6 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // Remove fake message simulation
-        // Real users only - connect to Firebase/backend for live chat
-
         function getTimeAgo(timestamp) {
             const now = Date.now();
             const diffMs = now - timestamp;
@@ -600,115 +645,42 @@
         }
 
         // Enter key to send message
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatInput = document.getElementById('chatInput');
-            if (chatInput) {
-                chatInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
-                });
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
             }
         });
 
-        function clearCanvas() {
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            pixelData = {};
-            pixelCount = 0;
-            contributors.clear();
-        }
-
-        function resetWall() {
-            clearCanvas();
-            // Add some graffiti-style text
-            ctx.fillStyle = '#ff0000';
-            ctx.font = '20px Arial';
-            ctx.fillText('FRESH WALL', 20, 40);
-        }
-
-        function archiveCurrentWall() {
-            const imageData = canvas.toDataURL();
-            const timestamp = new Date().toLocaleString();
-            archive.unshift({
-                id: archive.length + 1,
-                timestamp: timestamp,
-                imageData: imageData,
-                pixelCount: pixelCount
-            });
-            
-            updateArchiveList();
-        }
-
-        function saveToArchive() {
-            archiveCurrentWall();
-            alert('Wall saved to archive!');
-        }
-
-        function updateArchiveList() {
-            const archiveList = document.getElementById('archiveList');
-            archiveList.innerHTML = '';
-            
-            archive.slice(0, 10).forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'archive-item';
-                div.textContent = `Wall #${item.id} - ${getTimeAgo(item.timestamp)}`;
-                div.onclick = () => loadArchivedWall(item);
-                archiveList.appendChild(div);
-            });
-        }
-
-        function getTimeAgo(timestamp) {
-            const now = new Date();
-            const then = new Date(timestamp);
-            const diffMs = now - then;
-            const diffMins = Math.floor(diffMs / 60000);
-            
-            if (diffMins < 1) return 'just now';
-            if (diffMins < 60) return `${diffMins} min ago`;
-            if (diffMins < 1440) return `${Math.floor(diffMins / 60)} hr ago`;
-            return `${Math.floor(diffMins / 1440)} days ago`;
-        }
-
-        function loadArchivedWall(item) {
-            const img = new Image();
-            img.onload = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0);
-            };
-            img.src = item.imageData;
-        }
-
-        // Initialize
+        // Initialize everything
         function init() {
             initColorPalette();
             clearCanvas();
             
-            // Add some initial graffiti
+            // Add some initial text
             setTimeout(() => {
                 ctx.fillStyle = '#ff0000';
-                ctx.font = 'bold 16px Arial';
+                ctx.font = 'bold 16px monospace';
                 ctx.fillText('BATHROOM COIN', 10, 30);
                 
-                // Add some random pixels to make it look lived-in
-                for (let i = 0; i < 50; i++) {
+                // Add some starting pixels
+                for (let i = 0; i < 30; i++) {
                     const x = Math.floor(Math.random() * GRID_WIDTH) * PIXEL_SIZE;
                     const y = Math.floor(Math.random() * GRID_HEIGHT) * PIXEL_SIZE;
                     const color = colors[Math.floor(Math.random() * colors.length)];
                     drawPixel(x, y, color);
                 }
-            }, 1000);
-            
-            // Initialize chat (remove fake simulation)
-            updateChatDisplay();
-            scrollChatToBottom();
+            }, 500);
             
             // Start timers
             setInterval(updateTimer, 1000);
             setInterval(updateAutoRefresh, 1000);
+            
+            // Initialize chat
+            updateChatDisplay();
+            scrollChatToBottom();
         }
 
-        // Initialize when page loads
+        // Start when page loads
         window.addEventListener('load', init);
     </script>
 </body>
