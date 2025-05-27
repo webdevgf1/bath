@@ -259,24 +259,6 @@
             100% { opacity: 1; }
         }
 
-        .social-links {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .social-links a {
-            color: #fff;
-            font-size: 20px;
-            transition: color 0.3s;
-        }
-
-        .social-links a:hover {
-            color: #ffff00;
-        }
-
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -302,18 +284,10 @@
 <body>
     <div class="header">
         <div class="logo">BATHROOM COIN</div>
-        <nav class="nav">
-            <a href="#" onclick="showSection('draw')">BUY AN APE</a>
-            <a href="#" onclick="showSection('gallery')">GALLERY</a>
-            <a href="#" onclick="showSection('bathroom')" class="active">BATHROOM</a>
-            <a href="#" onclick="showSection('provenance')">PROVENANCE</a>
-            <a href="#" onclick="showSection('roadmap')">ROADMAP</a>
-            <a href="#" onclick="showSection('team')">TEAM</a>
-        </nav>
+        <div class="contract-address">CA: BATHROOMCOIN</div>
         <div class="social-links">
-            <a href="#" title="Instagram">📷</a>
-            <a href="#" title="Discord">💬</a>
-            <a href="#" title="Twitter">🐦</a>
+            <a href="https://twitter.com" target="_blank" title="X/Twitter">🐦</a>
+            <a href="https://pump.fun" target="_blank" title="Pump.fun">🚀</a>
         </div>
     </div>
 
@@ -527,9 +501,6 @@
                     drawPixel(x, y, color);
                 }
             }
-            
-            // Update online count - removed fake online stats
-            // Real-time wall indicator only
         }
 
         function updateStats() {
@@ -606,10 +577,6 @@
             img.src = item.imageData;
         }
 
-        function showSection(section) {
-            // Removed navigation switching logic since we no longer have nav sections
-        }
-
         // Initialize
         function init() {
             initColorPalette();
@@ -619,7 +586,7 @@
             setTimeout(() => {
                 ctx.fillStyle = '#ff0000';
                 ctx.font = 'bold 16px Arial';
-                ctx.fillText('BAYC BATHROOM', 10, 30);
+                ctx.fillText('BATHROOM COIN', 10, 30);
                 
                 // Add some random pixels to make it look lived-in
                 for (let i = 0; i < 50; i++) {
