@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAYC Bathroom Stall</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            overflow-x: hidden;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #111;
+            border-bottom: 2px solid #333;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffff00;
+            text-shadow: 0 0 10px #ffff00;
+        }
+
+        .nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .nav a:hover, .nav a.active {
+            color: #ffff00;
+        }
+
+        .container {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        .canvas-section {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .canvas-container {
+            position: relative;
+            border: 3px solid #333;
+            background: #f0f0f0;
+            margin-bottom: 20px;
+        }
+
+        #pixelCanvas {
+            cursor: crosshair;
+            image-rendering: pixelated;
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(8, 30px);
+            gap: 5px;
+        }
+
+        .color-btn {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #333;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .color-btn.selected {
+            border-color: #ffff00;
+            box-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+        }
+
+        .timer {
+            background: #222;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: 1px solid #444;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: #111;
+            border-left: 2px solid #333;
+            padding: 20px;
+        }
+
+        .toilet {
+            width: 200px;
+            height: 300px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            position: relative;
+            margin: 0 auto 30px;
+            border: 3px solid #ccc;
+        }
+
+        .toilet-bowl {
+            width: 120px;
+            height: 80px;
+            background: #000;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 2px solid #333;
+        }
+
+        .toilet-seat {
+            width: 140px;
+            height: 100px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 3px solid #ddd;
+        }
+
+        .toilet-seat::before {
+            content: '';
+            width: 80px;
+            height: 60px;
+            background: #000;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .flush-handle {
+            width: 20px;
+            height: 40px;
+            background: #ccc;
+            position: absolute;
+            right: -10px;
+            top: 50px;
+            border-radius: 10px;
+        }
+
+        .tank {
+            width: 180px;
+            height: 120px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 2px solid #ccc;
+        }
+
+        .stats {
+            background: #222;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .archive-list {
+            background: #222;
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .archive-item {
+            padding: 8px;
+            border-bottom: 1px solid #444;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .archive-item:hover {
+            background: #333;
+        }
+
+        .status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #222;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            z-index: 1000;
+        }
+
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ff00;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .social-links {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            color: #fff;
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: #ffff00;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: -1;
+            }
+            
+            .toilet {
+                width: 150px;
+                height: 200px;
+            }
+            
+            #pixelCanvas {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">BAYC</div>
+        <nav class="nav">
+            <a href="#" onclick="showSection('draw')">BUY AN APE</a>
+            <a href="#" onclick="showSection('gallery')">GALLERY</a>
+            <a href="#" onclick="showSection('bathroom')" class="active">BATHROOM</a>
+            <a href="#" onclick="showSection('provenance')">PROVENANCE</a>
+            <a href="#" onclick="showSection('roadmap')">ROADMAP</a>
+            <a href="#" onclick="showSection('team')">TEAM</a>
+        </nav>
+        <div class="social-links">
+            <a href="#" title="Instagram">📷</a>
+            <a href="#" title="Discord">💬</a>
+            <a href="#" title="Twitter">🐦</a>
+        </div>
+    </div>
+
+    <div class="status">
+        <span class="online-dot"></span>
+        <span id="onlineCount">1</span> online
+    </div>
+
+    <div class="container">
+        <div class="canvas-section">
+            <div class="controls">
+                <div class="color-palette" id="colorPalette"></div>
+                <div class="timer">
+                    <div>Next refresh: <span id="timer">29:45</span></div>
+                    <div>Auto-refresh: <span id="autoRefresh">5s</span></div>
+                </div>
+            </div>
+            
+            <div class="canvas-container">
+                <canvas id="pixelCanvas" width="800" height="600"></canvas>
+            </div>
+            
+            <div style="text-align: center; margin-top: 10px;">
+                <button onclick="clearCanvas()" style="background: #ff4444; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px;">Clear Wall</button>
+                <button onclick="saveToArchive()" style="background: #4444ff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Save to Archive</button>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="toilet">
+                <div class="tank"></div>
+                <div class="flush-handle"></div>
+                <div class="toilet-seat"></div>
+                <div class="toilet-bowl"></div>
+            </div>
+
+            <div class="stats">
+                <h3 style="margin-bottom: 15px; color: #ffff00;">Wall Stats</h3>
+                <div class="stat-item">
+                    <span>Pixels drawn:</span>
+                    <span id="pixelCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Contributors:</span>
+                    <span id="contributorCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Time left:</span>
+                    <span id="timeLeft">29:45</span>
+                </div>
+            </div>
+
+            <div class="archive-list">
+                <h3 style="margin-bottom: 15px; color: #ffff00;">Archive</h3>
+                <div id="archiveList">
+                    <div class="archive-item">Wall #1 - 2 min ago</div>
+                    <div class="archive-item">Wall #2 - 32 min ago</div>
+                    <div class="archive-item">Wall #3 - 1 hr ago</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Canvas setup
+        const canvas = document.getElementById('pixelCanvas');
+        const ctx = canvas.getContext('2d');
+        const PIXEL_SIZE = 4;
+        const GRID_WIDTH = canvas.width / PIXEL_SIZE;
+        const GRID_HEIGHT = canvas.height / PIXEL_SIZE;
+
+        // Color palette
+        const colors = [
+            '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
+            '#800000', '#808080', '#800080', '#008000', '#000080', '#808000', '#FF8000', '#8000FF'
+        ];
+
+        let selectedColor = '#000000';
+        let pixelData = {};
+        let isDrawing = false;
+        let contributors = new Set();
+        let pixelCount = 0;
+        let archive = [];
+
+        // Initialize color palette
+        function initColorPalette() {
+            const palette = document.getElementById('colorPalette');
+            colors.forEach((color, index) => {
+                const btn = document.createElement('div');
+                btn.className = 'color-btn';
+                btn.style.backgroundColor = color;
+                btn.onclick = () => selectColor(color, btn);
+                if (index === 0) btn.classList.add('selected');
+                palette.appendChild(btn);
+            });
+        }
+
+        function selectColor(color, btn) {
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedColor = color;
+        }
+
+        // Canvas drawing
+        function drawPixel(x, y, color) {
+            const pixelX = Math.floor(x / PIXEL_SIZE);
+            const pixelY = Math.floor(y / PIXEL_SIZE);
+            
+            if (pixelX >= 0 && pixelX < GRID_WIDTH && pixelY >= 0 && pixelY < GRID_HEIGHT) {
+                const key = `${pixelX},${pixelY}`;
+                if (!pixelData[key]) {
+                    pixelCount++;
+                    updateStats();
+                }
+                pixelData[key] = color;
+                
+                ctx.fillStyle = color;
+                ctx.fillRect(pixelX * PIXEL_SIZE, pixelY * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
+                
+                // Simulate contributor tracking
+                contributors.add(Math.random().toString(36).substr(2, 9));
+                updateStats();
+            }
+        }
+
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
+
+        // Event listeners
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            const pos = getMousePos(e);
+            drawPixel(pos.x, pos.y, selectedColor);
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDrawing) {
+                const pos = getMousePos(e);
+                drawPixel(pos.x, pos.y, selectedColor);
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isDrawing = false;
+        });
+
+        // Touch events for mobile
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const pos = getMousePos(touch);
+            drawPixel(pos.x, pos.y, selectedColor);
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const pos = getMousePos(touch);
+            drawPixel(pos.x, pos.y, selectedColor);
+        });
+
+        // Timer functionality
+        let timeLeft = 30 * 60; // 30 minutes in seconds
+        let autoRefreshCount = 5;
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            document.getElementById('timer').textContent = timeString;
+            document.getElementById('timeLeft').textContent = timeString;
+            
+            if (timeLeft <= 0) {
+                archiveCurrentWall();
+                resetWall();
+                timeLeft = 30 * 60;
+            } else {
+                timeLeft--;
+            }
+        }
+
+        function updateAutoRefresh() {
+            autoRefreshCount--;
+            document.getElementById('autoRefresh').textContent = `${autoRefreshCount}s`;
+            
+            if (autoRefreshCount <= 0) {
+                // Simulate receiving updates from other users
+                simulateCollaborativeDrawing();
+                autoRefreshCount = 5;
+            }
+        }
+
+        // Simulate collaborative drawing
+        function simulateCollaborativeDrawing() {
+            if (Math.random() < 0.3) { // 30% chance of new pixels
+                const numPixels = Math.floor(Math.random() * 5) + 1;
+                for (let i = 0; i < numPixels; i++) {
+                    const x = Math.floor(Math.random() * GRID_WIDTH) * PIXEL_SIZE;
+                    const y = Math.floor(Math.random() * GRID_HEIGHT) * PIXEL_SIZE;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    drawPixel(x, y, color);
+                }
+            }
+            
+            // Update online count
+            const onlineCount = Math.floor(Math.random() * 20) + 1;
+            document.getElementById('onlineCount').textContent = onlineCount;
+        }
+
+        function updateStats() {
+            document.getElementById('pixelCount').textContent = pixelCount;
+            document.getElementById('contributorCount').textContent = contributors.size;
+        }
+
+        function clearCanvas() {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            pixelData = {};
+            pixelCount = 0;
+            contributors.clear();
+            updateStats();
+        }
+
+        function resetWall() {
+            clearCanvas();
+            // Add some graffiti-style text
+            ctx.fillStyle = '#ff0000';
+            ctx.font = '20px Arial';
+            ctx.fillText('FRESH WALL', 20, 40);
+        }
+
+        function archiveCurrentWall() {
+            const imageData = canvas.toDataURL();
+            const timestamp = new Date().toLocaleString();
+            archive.unshift({
+                id: archive.length + 1,
+                timestamp: timestamp,
+                imageData: imageData,
+                pixelCount: pixelCount
+            });
+            
+            updateArchiveList();
+        }
+
+        function saveToArchive() {
+            archiveCurrentWall();
+            alert('Wall saved to archive!');
+        }
+
+        function updateArchiveList() {
+            const archiveList = document.getElementById('archiveList');
+            archiveList.innerHTML = '';
+            
+            archive.slice(0, 10).forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'archive-item';
+                div.textContent = `Wall #${item.id} - ${getTimeAgo(item.timestamp)}`;
+                div.onclick = () => loadArchivedWall(item);
+                archiveList.appendChild(div);
+            });
+        }
+
+        function getTimeAgo(timestamp) {
+            const now = new Date();
+            const then = new Date(timestamp);
+            const diffMs = now - then;
+            const diffMins = Math.floor(diffMs / 60000);
+            
+            if (diffMins < 1) return 'just now';
+            if (diffMins < 60) return `${diffMins} min ago`;
+            if (diffMins < 1440) return `${Math.floor(diffMins / 60)} hr ago`;
+            return `${Math.floor(diffMins / 1440)} days ago`;
+        }
+
+        function loadArchivedWall(item) {
+            const img = new Image();
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+            };
+            img.src = item.imageData;
+        }
+
+        function showSection(section) {
+            // Update navigation
+            document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // You can add section switching logic here
+            if (section === 'bathroom') {
+                // Already on bathroom section
+            }
+        }
+
+        // Initialize
+        function init() {
+            initColorPalette();
+            clearCanvas();
+            
+            // Add some initial graffiti
+            setTimeout(() => {
+                ctx.fillStyle = '#ff0000';
+                ctx.font = 'bold 16px Arial';
+                ctx.fillText('BAYC BATHROOM', 10, 30);
+                
+                // Add some random pixels to make it look lived-in
+                for (let i = 0; i < 50; i++) {
+                    const x = Math.floor(Math.random() * GRID_WIDTH) * PIXEL_SIZE;
+                    const y = Math.floor(Math.random() * GRID_HEIGHT) * PIXEL_SIZE;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    drawPixel(x, y, color);
+                }
+            }, 1000);
+            
+            // Start timers
+            setInterval(updateTimer, 1000);
+            setInterval(updateAutoRefresh, 1000);
+            
+            // Initial stats
+            updateStats();
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
